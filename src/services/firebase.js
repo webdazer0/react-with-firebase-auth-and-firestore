@@ -10,5 +10,5 @@ export const auth = fb.auth();
 
 // export const currentUser = firebase.auth().currentUser;
 
-export const provider = new firebase.auth.GoogleAuthProvider();
-export const fbProvider = new firebase.auth.FacebookAuthProvider();
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
+export const facebookProvider = new firebase.auth.FacebookAuthProvider();

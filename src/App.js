@@ -4,7 +4,7 @@ import Modal from "./components/Modal";
 import Navbar from "./components/Navbar";
 import Home from "./Home";
 import Wrapper from "./layout/Wrapper";
-import { auth, provider, fbProvider } from "./services/firebase";
+import { auth, googleProvider, facebookProvider } from "./services/firebase";
 
 function App() {
   const [register, setRegister] = useState(false);
@@ -13,7 +13,6 @@ function App() {
   const [user, setUser] = useState(false);
   const [logout, setLogout] = useState(true);
   const [profile, setProfile] = useState({});
-  const [verify, setVerify] = useState(false);
 
   const registerLogin = (allData) => {
     const { email, password } = allData;
@@ -21,63 +20,36 @@ function App() {
     if (login) {
       auth
         .signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          console.log("signin!");
-        });
+        .then((credentials) => console.log("Email signin!"))
+        .catch(console.log)
+        .finally(closeModal);
     } else if (register) {
       auth
         .createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          console.log("signup successfully!");
-        });
+        .then((credentials) => console.log("Email Sign up!"))
+        .catch(console.log)
+        .finally(closeModal);
     }
-    closeModal();
   };
 
   const loginWithGoogle = () => {
     auth
-      .signInWithPopup(provider)
-      .then((result) => {
-        console.log("google sign in");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    closeModal();
+      .signInWithPopup(googleProvider)
+      .then((credentials) => console.log("Google Sign in"))
+      .catch(console.log)
+      .finally(closeModal);
   };
 
   const loginWithFacebook = () => {
     auth
-      .signInWithPopup(fbProvider)
-      .then((result) => {
-        console.log("facebook sign in");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    console.log("login with FACEBOOK!!!!");
-    closeModal();
-  };
-
-  const controlUser = () => {
-    auth.onAuthStateChanged((userLogged) => {
-      if (userLogged) {
-        console.log(userLogged);
-        console.log("currentUser");
-        console.log(auth.currentUser);
-        setProfile({ ...userLogged });
-        setUser(true);
-        setLogout(false);
-      } else {
-        setUser(false);
-        setLogout(true);
-      }
-    });
+      .signInWithPopup(facebookProvider)
+      .then((credentials) => console.log("Facebook Sign in"))
+      .catch(console.log)
+      .finally(closeModal);
   };
 
   const verifyEmail = async () => {
     await auth.currentUser.sendEmailVerification();
-    console.log("inviando email!");
   };
 
   const handleLogout = (e) => {
@@ -90,6 +62,21 @@ function App() {
     setModal(false);
     setLogin(false);
     setRegister(false);
+  };
+
+  const controlUser = () => {
+    auth.onAuthStateChanged((userLogged) => {
+      const isLogged = !!userLogged;
+
+      setUser(isLogged);
+      setLogout(!isLogged);
+
+      if (isLogged) {
+        console.log("currentUser");
+        console.log(auth.currentUser);
+        setProfile({ ...userLogged });
+      }
+    });
   };
 
   useEffect(() => {
