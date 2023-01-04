@@ -3,7 +3,7 @@ import * as RemoteLoginService from "../services/remoteLoginService";
 import * as LocalStatusService from "../services/localStatusService";
 import { toast } from "react-toastify";
 
-const initialLogged = LocalStatusService.get();
+const initialLogged = LocalStatusService.getStatus();
 
 const useLogin = () => {
   const [user, setUser] = useState(initialLogged);
