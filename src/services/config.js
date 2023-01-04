@@ -1,10 +1,11 @@
-export default {
-  apiKey: "AIzaSyD2ThtawcYNUNvVN0-eakbR4voB5b3EPjA",
-  authDomain: "reactjs-crud-firestore.firebaseapp.com",
-  databaseURL: "https://reactjs-crud-firestore.firebaseio.com",
-  projectId: "reactjs-crud-firestore",
-  storageBucket: "reactjs-crud-firestore.appspot.com",
-  messagingSenderId: "690123503969",
-  appId: "1:690123503969:web:6ccd1879500e053df7ed20",
+const config = {
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_DATABASE_URL,
+  projectId: process.env.REACT_APP_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_MESSAGE_SENDER_ID,
+  appId: process.env.REACT_APP_ID,
 };
-// Your web app's Firebase configuration
+
+export default config;
