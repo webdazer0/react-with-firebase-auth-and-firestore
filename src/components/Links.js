@@ -1,44 +1,44 @@
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import { db } from "../services/firebase";
+import * as LinkService from "../services/linkService";
 import LinkForm from "./LinkForm";
+
+import { toast } from "react-toastify";
+import Utils from "../utilities/utils";
 
 function Links() {
   const [links, setLinks] = useState([]);
-  const [currentId, setCurrentId] = useState(0);
+  const [currentId, setCurrentId] = useState(null);
 
   const addOrEdit = async (alldata) => {
+    const item = {
+      ...alldata,
+    };
+
     try {
       if (currentId) {
-        await db.collection("my-links").doc(currentId).update(alldata);
+        await LinkService.updateById(currentId, item);
         setCurrentId("");
-        toast("Link updated!", { type: "success" });
+        return toast("Link updated!!", { type: "success" });
       } else {
-        await db.collection("my-links").doc().set(alldata);
-        toast("New link added!", { type: "success" });
+        await LinkService.create(item);
+        return toast("New link added!", { type: "success" });
       }
     } catch (error) {
       console.error(error);
+      toast(error.message, { type: "error" });
     }
   };
 
   const deleteLink = async (linkId) => {
-    if (window.confirm("Are you sure to delete this link?")) {
-      await db.collection("my-links").doc(linkId).delete();
-      toast("Link removed successfully!", { type: "error" });
-    }
+    const message = "Are you sure to delete this link?";
+    if (!window.confirm(message)) return;
+
+    await LinkService.deleteById(linkId);
+    toast("Link removed successfully!", { type: "error" });
   };
 
   const getLinks = async () => {
-    await db.collection("my-links").onSnapshot((querySnapshot) => {
-      const docs = [];
-      querySnapshot.forEach((doc) => {
-        docs.push({ ...doc.data(), id: doc.id });
-      });
-      setLinks(docs);
-    });
-
-    console.log("Get Links!");
+    await LinkService.getAll(setLinks);
   };
 
   useEffect(() => {
@@ -50,11 +50,23 @@ function Links() {
       <LinkForm {...{ addOrEdit, links, currentId }} />
       <div className="col-md-8">
         <div className="row">
-          {links.map(({ url, website, description, id }) => (
+          {links.map(({ url, website, description, id, createdAt }, index) => (
             <div key={id} className="col-md-6">
-              <div className="card mb-4">
+              <div className="card mb-4 ">
                 <div className="card-header d-flex justify-content-between">
-                  <h5>{website}</h5>
+                  <div>
+                    <h5 className="mb-0">{website}</h5>
+
+                    <span
+                      data-toggle="tooltip"
+                      className="text-secondary d-flex align-items-center"
+                      title={Utils.dateFullFormat(createdAt?.toDate())}
+                    >
+                      <i className="material-icons md-18">timer</i>
+                      {Utils.dateFormat(createdAt?.toDate())}
+                    </span>
+                  </div>
+
                   <div>
                     <i
                       className="material-icons text-warning"
@@ -73,14 +85,9 @@ function Links() {
                   </div>
                 </div>
                 <div className="card-body">
-                  <p>{description}</p>
-                  <a
-                    href={`https://${url}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Go to Website
-                  </a>
+                  <AnchorLink href={url} type={"outline-primary"}>
+                    Go to link
+                  </AnchorLink>
                 </div>
               </div>
             </div>
@@ -92,3 +99,15 @@ function Links() {
 }
 
 export default Links;
+
+const AnchorLink = ({ href, children, type = "primary" }) => (
+  <a
+    className={`btn btn-sm btn-${type}`}
+    href={href}
+    target="_blank"
+    role="button"
+    rel="noopener noreferrer"
+  >
+    {children}
+  </a>
+);

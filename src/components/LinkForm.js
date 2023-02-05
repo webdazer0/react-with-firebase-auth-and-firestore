@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { db } from "../services/firebase";
+import * as LinkService from "../services/linkService";
 
 function LinkForm({ addOrEdit, links, currentId }) {
   const initialStateValue = {
@@ -10,9 +10,9 @@ function LinkForm({ addOrEdit, links, currentId }) {
   };
   const [values, setValues] = useState(initialStateValue);
 
-  const getLinkById = async (linkId) => {
-    const doc = await db.collection("my-links").doc(linkId).get();
-    setValues(doc.data());
+  const getLinkById = async (id) => {
+    const link = await LinkService.getById(id);
+    setValues(link);
   };
 
   const handleChange = (e) => {
@@ -45,11 +45,15 @@ function LinkForm({ addOrEdit, links, currentId }) {
 
   return (
     <div className="col-md-4 mb-4">
-      <div className="card card-body">
+      <div
+        className={`card card-body border ${
+          !currentId ? "" : "border-warning"
+        }`}
+      >
         <form onSubmit={handleSubmit}>
           <div className="form-group input-group">
             <div className="input-group-text bg-light">
-              <i className="material-icons">insert_link</i>
+              <i className="material-icons md-18">http</i>
             </div>
             <input
               type="text"
@@ -62,7 +66,7 @@ function LinkForm({ addOrEdit, links, currentId }) {
           </div>
           <div className="form-group input-group">
             <div className="input-group-text bg-light">
-              <i className="material-icons">create</i>
+              <i className="material-icons md-18">create</i>
             </div>
             <input
               type="text"
