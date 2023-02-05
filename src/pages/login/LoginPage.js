@@ -8,6 +8,7 @@ import {
   REGISTER_WITH_EMAIL,
 } from "../../utilities/utils.email";
 import IconClouds from "../../components/icons/IconCloud";
+import CircleButton from "./components/CircleButton";
 
 const initialLoginValue = {
   email: "",
@@ -56,7 +57,6 @@ const LoginPage = () => {
 
   const textSubmit = isLogin ? "Sign in" : "Register";
   const classSubmit = isLogin ? "primary" : "secondary";
-
   const { email, password } = user;
 
   return (
@@ -118,20 +118,8 @@ const LoginPage = () => {
               Not a member? <NavLink to="./register">Register</NavLink>
             </p>
             <p>or sign up with:</p>
-            <button
-              type="button"
-              className="btn  btn-floating mx-1 circle-link"
-              onClick={handleLoginWithFacebook}
-            >
-              <i className="fab fa-facebook-f"></i>
-            </button>
-            <button
-              type="button"
-              className="btn  btn-floating mx-1 circle-link"
-              onClick={handleLoginWithGoogle}
-            >
-              <i className="fab fa-google"></i>
-            </button>
+            <CircleButton onClick={handleLoginWithFacebook} icon="facebook" />
+            <CircleButton onClick={handleLoginWithGoogle} icon="google" />
           </div>
         ) : (
           <div className="text-center">

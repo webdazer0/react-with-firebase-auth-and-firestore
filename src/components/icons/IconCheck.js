@@ -5,7 +5,6 @@ const IconCheck = () => {
       viewBox="0 0 24 24"
       aria-label="Account verified"
       role="img"
-      className="r-svg-default r-svg-select"
       data-testid="icon-verified"
     >
       <g>
