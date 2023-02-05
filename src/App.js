@@ -33,6 +33,7 @@ function App() {
       <Suspense fallback={<Loading />}>
         <Navbar
           {...{
+            user,
             setModal,
             setRegister,
             setLogin,
